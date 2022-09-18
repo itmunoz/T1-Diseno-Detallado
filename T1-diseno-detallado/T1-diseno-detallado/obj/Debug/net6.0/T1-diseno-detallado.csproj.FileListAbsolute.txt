@@ -1,0 +1,11 @@
+/Users/nachomunoz/Desktop/universidad/Diseño Detallado/T1-Diseno-Detallado/T1-diseno-detallado/T1-diseno-detallado/bin/Debug/net6.0/T1-diseno-detallado
+/Users/nachomunoz/Desktop/universidad/Diseño Detallado/T1-Diseno-Detallado/T1-diseno-detallado/T1-diseno-detallado/bin/Debug/net6.0/T1-diseno-detallado.dll
+/Users/nachomunoz/Desktop/universidad/Diseño Detallado/T1-Diseno-Detallado/T1-diseno-detallado/T1-diseno-detallado/bin/Debug/net6.0/T1-diseno-detallado.pdb
+/Users/nachomunoz/Desktop/universidad/Diseño Detallado/T1-Diseno-Detallado/T1-diseno-detallado/T1-diseno-detallado/obj/Debug/net6.0/T1-diseno-detallado.csproj.AssemblyReference.cache
+/Users/nachomunoz/Desktop/universidad/Diseño Detallado/T1-Diseno-Detallado/T1-diseno-detallado/T1-diseno-detallado/obj/Debug/net6.0/T1-diseno-detallado.GeneratedMSBuildEditorConfig.editorconfig
+/Users/nachomunoz/Desktop/universidad/Diseño Detallado/T1-Diseno-Detallado/T1-diseno-detallado/T1-diseno-detallado/obj/Debug/net6.0/T1-diseno-detallado.AssemblyInfoInputs.cache
+/Users/nachomunoz/Desktop/universidad/Diseño Detallado/T1-Diseno-Detallado/T1-diseno-detallado/T1-diseno-detallado/obj/Debug/net6.0/T1-diseno-detallado.AssemblyInfo.cs
+/Users/nachomunoz/Desktop/universidad/Diseño Detallado/T1-Diseno-Detallado/T1-diseno-detallado/T1-diseno-detallado/obj/Debug/net6.0/T1-diseno-detallado.csproj.CoreCompileInputs.cache
+/Users/nachomunoz/Desktop/universidad/Diseño Detallado/T1-Diseno-Detallado/T1-diseno-detallado/T1-diseno-detallado/obj/Debug/net6.0/T1-diseno-detallado.dll
+/Users/nachomunoz/Desktop/universidad/Diseño Detallado/T1-Diseno-Detallado/T1-diseno-detallado/T1-diseno-detallado/obj/Debug/net6.0/refint/T1-diseno-detallado.dll
+/Users/nachomunoz/Desktop/universidad/Diseño Detallado/T1-Diseno-Detallado/T1-diseno-detallado/T1-diseno-detallado/obj/Debug/net6.0/T1-diseno-detallado.pdb
