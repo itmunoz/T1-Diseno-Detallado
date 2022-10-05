@@ -6,8 +6,8 @@ public class Controller
 {
     private static List<string> _decksPath;
     private static List<Card> CardsList;
-    private static string _deck1;
-    private static string _deck2;
+    private static string[] _deck1;
+    private static string[] _deck2;
     private static List<SuperStarCard> SuperStarCardsList;
     private static Player Player1;
     private static Player Player2;
@@ -40,12 +40,33 @@ public class Controller
         _deck1 = AskForDecks();
         _deck2 = AskForDecks();
         
-        Console.WriteLine(_deck1);
+        Console.WriteLine(_deck1[0]);
         Console.WriteLine("########################");
-        Console.WriteLine(_deck2);
+        Console.WriteLine(_deck2[0]);
 
-        bool isDeck1Valid = VerifyDeck(_deck1);
-        bool isDeck2Valid = VerifyDeck(_deck2);
+        VerifySuperstar(_deck1);
+        VerifySuperstar(_deck2);
+
+        // List<Card> TrueDeck1 = CreateDeck(_deck1);
+        // List<Card> TrueDeck2 = CreateDeck(_deck2);
+
+        // bool isDeck1Valid = VerifyDeck(_deck1);
+        // bool isDeck2Valid = VerifyDeck(_deck2);
+    }
+
+    private static bool VerifySuperstar(string[] deck)
+    {
+        string SuperStar = deck[0];
+        
+        
+        return true;
+    }
+
+    private static List<Card> CreateDeck(string deck)
+    {
+        List<Card> TrueDeck = new List<Card>();
+
+        return TrueDeck;
     }
 
     private static bool VerifyDeck(string deck)
@@ -54,13 +75,15 @@ public class Controller
         return true;
     }
 
-    private static string AskForDecks()
+    private static string[] AskForDecks()
     {
         ShowDecksPaths();
         int deckId = AskForNumber(0, _decksPath.Count - 1);
         string deckPath = _decksPath[deckId];
-        string text = File.ReadAllText(deckPath);
+        string[] text = File.ReadAllLines(deckPath);
         _decksPath.RemoveAt(deckId);
+        
+        
         return text;
     }
 
