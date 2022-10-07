@@ -1,6 +1,7 @@
 namespace T1_diseno_detallado;
 
 using System.Text.Json;
+using System.Linq;
 
 public class Controller
 {
@@ -53,12 +54,93 @@ public class Controller
 
         bool isDeck1Valid = VerifyDeck(TrueDeck1);
         bool isDeck2Valid = VerifyDeck(TrueDeck2);
+        
+        Console.WriteLine(isDeck1Valid);
+        Console.WriteLine(isDeck2Valid);
     }
     
     private static bool VerifyDeck(List<Card> deck)
     {
+        bool isLengthValid = VerifyDeckLength(deck);
+        bool isCardQuantity = VerifyCardQuantity(deck);
+        bool isHeelAndFaceOk = VerifyHeelAndFace(deck);
+        return (isLengthValid && isCardQuantity && isHeelAndFaceOk);
+    }
+
+    private static bool VerifyHeelAndFace(List<Card> deck)
+    {
+        bool isHeelAndFaceOk = true;
+        int numberOfHeelCards = 0;
+        int numberOfFaceCards = 0;
+
+        foreach (var card in deck)
+        {
+            if (card.Subtypes.Contains("Heel"))
+            {
+                numberOfHeelCards += 1;
+            }
+
+            if (card.Subtypes.Contains("Face"))
+            {
+                numberOfFaceCards += 1;
+            }
+        }
+
+        if (numberOfFaceCards != 0 && numberOfHeelCards != 0)
+        {
+            isHeelAndFaceOk = false;
+        }
         
-        return true;
+        return isHeelAndFaceOk;
+    }
+
+    private static bool VerifyCardQuantity(List<Card> deck)
+    {
+        bool isEveryCardOk = true;
+
+        foreach (var analysed_card in deck)
+        {
+            int cardCount = 0;
+
+            foreach (var card in deck)
+            {
+                if (analysed_card.Title == card.Title)
+                {
+                    cardCount += 1;
+                }
+            }
+            
+            if (analysed_card.Subtypes.Contains("Unique"))
+            {
+                if (cardCount > 1)
+                {
+                    isEveryCardOk = false;
+                }
+            }
+            else if (analysed_card.Subtypes.Contains("SetUp"))
+            {
+                isEveryCardOk = true;
+            }
+            else
+            {
+                if (cardCount > 3)
+                {
+                    isEveryCardOk = false;
+                }
+            }
+        }
+
+        return isEveryCardOk;
+    }
+
+    private static bool VerifyDeckLength(List<Card> deck)
+    {
+        if (deck.Count == 60)
+        {
+            return true;
+        }
+
+        return false;
     }
     
     private static List<Card> CreateDeck(string[] deck)
