@@ -22,4 +22,8 @@ public class Card
         StunValue = stunValue;
         CardEffect = cardEffect;
     }
+    
+    public object Clone() {
+        return this.MemberwiseClone();
+    }
 }

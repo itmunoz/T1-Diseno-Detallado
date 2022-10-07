@@ -31,7 +31,7 @@ public class Controller
 
     private static void TellUserToAddMoreDecks()
     {
-        Console.WriteLine("\nEn este minuto no tienes suficientes masos");
+        Console.WriteLine("\nEn este minuto no tienes suficientes mazos");
         Console.WriteLine("Por favor agrega más masos.");
     }
 
@@ -39,40 +39,75 @@ public class Controller
     {
         _deck1 = AskForDecks();
         _deck2 = AskForDecks();
-        
-        Console.WriteLine(_deck1[0]);
-        Console.WriteLine("########################");
-        Console.WriteLine(_deck2[0]);
 
-        VerifySuperstar(_deck1);
-        VerifySuperstar(_deck2);
+        AssignSuperstar(_deck1, Player1);
+        AssignSuperstar(_deck2, Player2);
 
-        // List<Card> TrueDeck1 = CreateDeck(_deck1);
-        // List<Card> TrueDeck2 = CreateDeck(_deck2);
+        List<Card> TrueDeck1 = CreateDeck(_deck1);
+        List<Card> TrueDeck2 = CreateDeck(_deck2);
 
-        // bool isDeck1Valid = VerifyDeck(_deck1);
-        // bool isDeck2Valid = VerifyDeck(_deck2);
+        foreach (var VARIABLE in TrueDeck1)
+        {
+            Console.WriteLine(VARIABLE.Damage);
+        }
+
+        bool isDeck1Valid = VerifyDeck(TrueDeck1);
+        bool isDeck2Valid = VerifyDeck(TrueDeck2);
     }
-
-    private static bool VerifySuperstar(string[] deck)
+    
+    private static bool VerifyDeck(List<Card> deck)
     {
-        string SuperStar = deck[0];
-        
         
         return true;
     }
-
-    private static List<Card> CreateDeck(string deck)
+    
+    private static List<Card> CreateDeck(string[] deck)
     {
         List<Card> TrueDeck = new List<Card>();
 
+        for (int i = 1; i < deck.Length; i++)
+        {
+            int cardQuantityInt;
+            string currentCard = deck[i];
+            string cardName = currentCard.Substring(2);
+            string cardQuantityString = currentCard.Substring(0, 1);
+            bool isCardParsable = int.TryParse(cardQuantityString, out cardQuantityInt);
+            
+            for (int j = 0; j < CardsList.Count; j++)
+            {
+                if (CardsList[j].Title == cardName)
+                {
+                    for (int k = 0; k < cardQuantityInt; k++)
+                    {
+                        TrueDeck.Add(new Card(CardsList[j].Title, CardsList[j].Types, CardsList[j].Subtypes, CardsList[j].Fortitude, CardsList[j].Damage, CardsList[j].StunValue, CardsList[j].CardEffect));
+                    }
+                }
+            }
+        }
         return TrueDeck;
     }
 
-    private static bool VerifyDeck(string deck)
+    private static void VerifySuperstar(Player player)
     {
-        
-        return true;
+        if (player.Superstar is null)
+        {
+            Console.WriteLine("No se encontró una superestrella válida en este mazo");
+            Environment.Exit(0);
+        }
+    }
+
+    private static void AssignSuperstar(string[] deck, Player player)
+    {
+        string SuperStar = deck[0];
+        for (int i = 0; i < SuperStarCardsList.Count; i++)
+        {
+            if (SuperStarCardsList[i].file_name == SuperStar)
+            {
+                player.Superstar = SuperStarCardsList[i];
+                break;
+            }
+        }
+        VerifySuperstar(player);
     }
 
     private static string[] AskForDecks()
@@ -143,8 +178,8 @@ public class Controller
         superStarsList.Add(new SuperStarCard("THE UNDERTAKER", "THE UNDERTAKER (Superstar Card)", 6, 4, "Once during your turn, you may discard 2 cards to the Ringside pile and take 1 card from the Ringside pile and place it into your hand."));
         superStarsList.Add(new SuperStarCard("MANKIND", "MANKIND (Superstar Card)", 2, 4, "You must always draw 2 cards, if possible, during your draw segment. All damage from opponent is at -1D."));
         superStarsList.Add(new SuperStarCard("THE ROCK", "THE ROCK (Superstar Card)", 5, 5, "At the start of your turn, before your draw segment, you may take 1 card from your Ringside pile and place it on the bottom of your Arsenal."));
-        superStarsList.Add(new SuperStarCard("KANE", "KANE (SuperstarCard)", 7, 2, "At the start of your turn, before your draw segment, opponent must take the top card from his Arsenal and place it into his Ringside pile."));
-        superStarsList.Add(new SuperStarCard("CHRIS JERICHO", "CHRIS JERICHO, (Superstar Card)", 7, 3, "Once during your turn, you may discard a card from your hand to force your opponent to discard a card from his hand."));
+        superStarsList.Add(new SuperStarCard("KANE", "KANE (Superstar Card)", 7, 2, "At the start of your turn, before your draw segment, opponent must take the top card from his Arsenal and place it into his Ringside pile."));
+        superStarsList.Add(new SuperStarCard("CHRIS JERICHO", "CHRIS JERICHO (Superstar Card)", 7, 3, "Once during your turn, you may discard a card from your hand to force your opponent to discard a card from his hand."));
         return superStarsList;
     }
 }
