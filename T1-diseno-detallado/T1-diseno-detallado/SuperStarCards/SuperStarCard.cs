@@ -8,12 +8,15 @@ public class SuperStarCard
     public int superstarValue { get ; private set ; }
     public string ability { get ; private set ; }
 
-    public SuperStarCard(string name, string file_name, int handSize, int superstarValue, string ability)
+    public string cardSubtype { get ; private set ; }
+
+    public SuperStarCard(string name, string file_name, int handSize, int superstarValue, string ability, string cardSubtype)
     {
         this.name = name;
         this.file_name = file_name;
         this.handSize = handSize;
         this.superstarValue = superstarValue;
         this.ability = ability;
+        this.cardSubtype = cardSubtype;
     }
 }
