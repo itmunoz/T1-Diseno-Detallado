@@ -12,22 +12,30 @@ public class Controller
     private static List<SuperStarCard> SuperStarCardsList;
     private static Player Player1;
     private static Player Player2;
+    private static Game Game;
 
     public static void Run()
     {
         CreateFirstObjects();
-        
-        Console.WriteLine("----------------------");
-        Console.WriteLine("Bienvenido!!!");
-        Console.WriteLine("Elige alguno de estos mazos:");
+        WelcomeMessages();
 
         _decksPath = GetDeckFiles();
         if (_decksPath.Count > 1)
+        {
             AskUserForDecks();
+            Game.StartGame(Player1, Player2);
+        }
         else
             TellUserToAddMoreDecks();
         Console.WriteLine("\nQue tengas un buen día :)");
 
+    }
+
+    public static void WelcomeMessages()
+    {
+        Console.WriteLine("----------------------");
+        Console.WriteLine("Bienvenido!!!");
+        Console.WriteLine("Elige alguno de estos mazos:");
     }
 
     private static void TellUserToAddMoreDecks()
@@ -47,18 +55,13 @@ public class Controller
         List<Card> TrueDeck1 = CreateDeck(_deck1);
         List<Card> TrueDeck2 = CreateDeck(_deck2);
 
-        //foreach (var VARIABLE in TrueDeck1)
-        //{
-        //    Console.WriteLine(VARIABLE.Damage);
-        //}
-
         bool isDeck1Valid = VerifyDeck(TrueDeck1, Player1);
         bool isDeck2Valid = VerifyDeck(TrueDeck2, Player2);
-        
-        Console.WriteLine(isDeck1Valid);
-        Console.WriteLine(isDeck2Valid);
+
+        Player1.Arsenal = TrueDeck1;
+        Player2.Arsenal = TrueDeck2;
     }
-    
+
     private static bool VerifyDeck(List<Card> deck, Player player)
     {
         bool isLengthValid = VerifyDeckLength(deck, player);
@@ -263,7 +266,7 @@ public class Controller
     private static List<string> GetDeckFiles()
     {
         List<string> decksPath = new List<string>();
-        foreach (string file in Directory.GetFiles("Tests_v5/decks"))
+        foreach (string file in Directory.GetFiles("Tests_v9/decks"))
             if (file.EndsWith(".txt"))
                 decksPath.Add(file);
 

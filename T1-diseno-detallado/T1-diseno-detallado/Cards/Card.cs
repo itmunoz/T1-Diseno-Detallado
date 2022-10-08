@@ -7,7 +7,7 @@ public class Card
     public string Title  { get ; private set ; }
     public string[] Types  { get ; private set ; }
     public string[] Subtypes  { get ; private set ; }
-    public string Fortitude  { get ; private set ; }
+    public string Fortitude  { get ; set ; }
     public string Damage  { get ; private set ; }
     public string StunValue  { get ; private set ; }
     public string CardEffect  { get ; private set ; }
@@ -21,9 +21,5 @@ public class Card
         Damage = damage;
         StunValue = stunValue;
         CardEffect = cardEffect;
-    }
-    
-    public object Clone() {
-        return this.MemberwiseClone();
     }
 }
