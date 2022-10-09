@@ -67,7 +67,7 @@ public class Game
                 }
                 else
                 {
-                    UseSuperAbility(player, opponent);
+                    player.Superstar.UseAbility(player, opponent);
                     usedAbilityThisTurn = true;
                 }
             } 
@@ -214,7 +214,7 @@ public class Game
         List<Card> playableCards = new List<Card>();
         foreach (var card in player.Hand)
         {
-            if (card.GetFortitudeInt() <= player.GetFortitude())
+            if (card.GetFortitudeInt() <= player.GetFortitude() && (card.Types.Contains("Action") || card.Types.Contains("Maneuver")))
             {
                 playableCards.Add(card);
             }
@@ -286,14 +286,6 @@ public class Game
         }
     }
 
-    private static void UseSuperAbility(Player player, Player opponent)
-    {
-        if (player.Superstar.name == "CHRIS JERICHO")
-        {
-            JerichoSuperStarAbility(player, opponent);
-        }
-    }
-
     private static void StartTurnOptions(Player player, bool isAbilityAvailable)
     {
         Console.WriteLine("-----------------------------------------");
@@ -360,7 +352,6 @@ public class Game
             player.Hand.Add(drawnCard);
             player.Arsenal.RemoveAt(player.Arsenal.Count - 1);
         }
-        
     }
 
     private static void StartTurnMessage()
@@ -395,19 +386,6 @@ public class Game
         } while (!wasParseSuccessful || number < minValue || number > maxValue);
 
         return number;
-    }
-    
-    private static void JerichoSuperStarAbility(Player player, Player opponent)
-    {
-        PrintCards(player.Hand);
-        Console.WriteLine("Escoge una carta de la mano de " + player.Superstar.name + " para descartar");
-        int selectedIdPlayer = AskForNumber(0, player.Hand.Count - 1);
-        DiscardCard(player, selectedIdPlayer);
-
-        PrintCards(opponent.Hand);
-        Console.WriteLine("Escoge una carta de la mano de " + opponent.Superstar.name + " para descartar");
-        int selectedIdOpponent = AskForNumber(0, opponent.Hand.Count - 1);
-        DiscardCard(opponent, selectedIdOpponent);
     }
 
     private static void DiscardCard(Player player, int selectedId)
