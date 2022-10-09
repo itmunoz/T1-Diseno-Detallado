@@ -22,4 +22,14 @@ public class Card
         StunValue = stunValue;
         CardEffect = cardEffect;
     }
+
+    public int GetFortitudeInt()
+    {
+        return Int32.Parse(this.Fortitude);
+    }
+
+    public int GetDamageInt()
+    {
+        return Int32.Parse(this.Damage);
+    }
 }

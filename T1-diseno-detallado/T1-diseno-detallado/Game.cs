@@ -37,6 +37,7 @@ public class Game
 
     private static void PlayTurn(Player player, Player opponent)
     {
+        DrawCard(player);
         bool isTurnOver = false;
         while (!isTurnOver)
         {
@@ -50,11 +51,11 @@ public class Game
             } 
             else if (selectedOption == 1)
             {
-                ViewCards();
+                ViewCards(player, opponent);
             }
             else if (selectedOption == 2)
             {
-                PlayCard();
+                PlayCard(player, opponent);
             }
             else if (selectedOption == 3)
             {
@@ -64,14 +65,143 @@ public class Game
         }
     }
 
-    private static void PlayCard()
+    private static void PlayCard(Player player, Player opponent)
+    {
+        Console.WriteLine("Estas son las cartas que puedes jugar:");
+        List<Card> playableCards = GetPlayableCards(player);
+        
+        PrintCards(playableCards);
+        Console.WriteLine("-------------");
+        Console.WriteLine("Ingresa el ID de la carta que quieres jugar. Puedes ingresar '-1' para cancelar.");
+        Console.WriteLine("(Ingresa un número entre -1 y " + (playableCards.Count - 1) + ")");
+        
+        int selectedOption = AskForNumber(-1 , playableCards.Count - 1);
+
+        if (selectedOption != -1)
+        {
+            Card playedCard = playableCards[selectedOption];
+
+            PutCardInRingArea(playedCard, player);
+
+            ApplyCardEffect(playedCard, player, opponent);
+            
+            ExecuteCardDamage(playedCard, player, opponent);
+        }
+    }
+
+    private static void PutCardInRingArea(Card playedCard, Player player)
+    {
+        player.RingArea.Add(playedCard);
+        player.Hand.Remove(playedCard);
+    }
+
+    private static void ApplyCardEffect(Card playedCard, Player player, Player opponent)
     {
         
     }
 
-    private static void ViewCards()
+    private static void ExecuteCardDamage(Card playedCard, Player player, Player opponent)
     {
+        int totalDamage = playedCard.GetDamageInt();
+
+        for (int i = 0; i < totalDamage; i++)
+        {
+            if (opponent.Arsenal.Count == 0)
+            {
+                AnnounceWinner(player, opponent);
+            }
+            else
+            {
+                Card lostCard = opponent.Arsenal[opponent.Arsenal.Count - 1];
+                opponent.Ringside.Add(lostCard);
+                opponent.Arsenal.RemoveAt(opponent.Arsenal.Count - 1);
+            }
+        }
+    }
+
+    private static void AnnounceWinner(Player player, Player opponent)
+    {
+        Console.WriteLine("#####################");
+        Console.WriteLine(opponent.Superstar.name + " se ha quedado sin cartas en su Arsenal!");
+        Console.WriteLine("El ganador es " + player.Superstar.name + "!!!!!");
+        Environment.Exit(0);
+    }
+
+    private static List<Card> GetPlayableCards(Player player)
+    {
+        List<Card> playableCards = new List<Card>();
+        foreach (var card in player.Hand)
+        {
+            if (card.GetFortitudeInt() <= player.GetFortitude())
+            {
+                playableCards.Add(card);
+            }
+        }
+
+        return playableCards;
+    }
+
+    private static void ViewCards(Player player, Player opponent)
+    {
+        Console.WriteLine("Juega " + player.Superstar.name + ". ¿Qué cartas quieres ver?");
+        Console.WriteLine("        1. Mi mano.");
+        Console.WriteLine("        2. Mi ringside.");
+        Console.WriteLine("        3. Mi ring area.");
+        Console.WriteLine("        4. El ringside de mi oponente.");
+        Console.WriteLine("        5. El ring area de mi oponente.");
+        Console.WriteLine("(Ingresa un número entre 0 y 5)");
         
+        int selectedOption = AskForNumber(1, 5);
+
+        if (selectedOption == 1)
+        {
+            PrintCards(player.Hand);
+        }
+        else if (selectedOption == 2)
+        {
+            PrintCards(player.Ringside);
+        }
+        else if (selectedOption == 3)
+        {
+            PrintCards(player.RingArea);
+        }
+        else if (selectedOption == 4)
+        {
+            PrintCards(opponent.Ringside);
+        }
+        else if (selectedOption == 5)
+        {
+            PrintCards(opponent.RingArea);
+        }
+    }
+
+    private static void PrintCards(List<Card> cards)
+    {
+        int currentCardNumber = 0;
+        foreach (var card in cards)
+        {
+            Console.WriteLine("------------- Card #" + currentCardNumber);
+            Console.WriteLine("Title: " + card.Title);
+            Console.WriteLine("Stats: [" + card.Fortitude + "F/" + card.Damage + "D/" + card.StunValue + "SV]");
+            
+            string typesString = "";
+            foreach (var type in card.Types)
+            {
+                typesString += (type + ", ");
+            }
+            Console.WriteLine("Types: " + typesString);
+            
+            string subtypesString = "";
+            foreach (var subtype in card.Subtypes)
+            {
+                subtypesString += (subtype + ", ");
+            }
+            Console.WriteLine("Subtypes: " + subtypesString);
+            
+            Console.WriteLine("Effect: " + card.CardEffect);
+            Console.WriteLine("");
+            currentCardNumber += 1;
+        }
     }
 
     private static void UseSuperAbility()
@@ -128,6 +258,13 @@ public class Game
             player.Hand.Add(drawnCard);
             player.Arsenal.RemoveAt(player.Arsenal.Count - 1);
         }
+    }
+
+    private static void DrawCard(Player player)
+    {
+        Card drawnCard = player.Arsenal[player.Arsenal.Count - 1];
+        player.Hand.Add(drawnCard);
+        player.Arsenal.RemoveAt(player.Arsenal.Count - 1);
     }
 
     private static void StartTurnMessage()
