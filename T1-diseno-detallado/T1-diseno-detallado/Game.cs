@@ -162,12 +162,75 @@ public class Game
         {
             Card playedCard = playableCards[selectedOption];
 
+            PlayedCardData(player, playedCard);
+
             PutCardInRingArea(playedCard, player);
 
-            ApplyCardEffect(playedCard, player, opponent);
-            
-            ExecuteCardDamage(playedCard, player, opponent);
+            bool isCardReverted = ReverseCard(playedCard, player, opponent);
+
+            if (!isCardReverted)
+            {
+                ApplyCardEffect(playedCard, player, opponent);
+                ExecuteCardDamage(playedCard, player, opponent);
+            }
         }
+    }
+
+    private static bool ReverseCard(Card playedCard, Player player, Player opponent)
+    {
+        Console.WriteLine("-----------------------------");
+        Console.WriteLine("Pero " + opponent.Superstar.name + " tiene la opción de revertir la carta:");
+        Console.WriteLine("");
+        
+        Console.WriteLine("Lo lamento, pero no hay nada que jugar");
+        Console.WriteLine("");
+
+        CardNotReverted(playedCard, player, opponent);
+        return false;
+    }
+
+    private static void CardNotReverted(Card playedCard, Player player, Player opponent)
+    {
+        Console.WriteLine("-----------------------------");
+        Console.WriteLine(opponent.Superstar.name + " no revierte la carta de " + player.Superstar.name);
+        
+        Console.WriteLine("La carta '" + playedCard.Title + "' es exitosamente jugada");
+        FinalCardData(playedCard);
+        
+        Console.WriteLine("");
+        Console.WriteLine(opponent.Superstar.name + " recibe " + playedCard.Damage + " de daño.");
+        Console.WriteLine("");
+    }
+
+    private static void PlayedCardData(Player player, Card card)
+    {
+        Console.WriteLine("---------------------");
+        Console.WriteLine(player.Superstar.name + " intenta jugar la siguiente carta");
+        
+        FinalCardData(card);
+    }
+
+    private static void FinalCardData(Card card)
+    {
+        Console.WriteLine("Title: " + card.Title);
+        Console.WriteLine("Stats: [" + card.Fortitude + "F/" + card.Damage + "D/" + card.StunValue + "SV]");
+            
+        string typesString = "";
+        foreach (var type in card.Types)
+        {
+            typesString += (type + ", ");
+        }
+        Console.WriteLine("Types: " + typesString);
+            
+        string subtypesString = "";
+        foreach (var subtype in card.Subtypes)
+        {
+            subtypesString += (subtype + ", ");
+        }
+        Console.WriteLine("Subtypes: " + subtypesString);
+            
+        Console.WriteLine("Effect: " + card.CardEffect);
+        Console.WriteLine("");
     }
 
     private static void PutCardInRingArea(Card playedCard, Player player)
@@ -197,6 +260,9 @@ public class Game
                 Card lostCard = opponent.Arsenal[opponent.Arsenal.Count - 1];
                 opponent.Ringside.Add(lostCard);
                 opponent.Arsenal.RemoveAt(opponent.Arsenal.Count - 1);
+                
+                Console.WriteLine("------------------------ " + (i + 1) + "/" + totalDamage + " damage");
+                FinalCardData(lostCard);
             }
         }
     }
