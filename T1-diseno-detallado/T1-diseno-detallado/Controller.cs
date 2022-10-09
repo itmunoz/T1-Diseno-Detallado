@@ -290,13 +290,13 @@ public class Controller
     private static List<SuperStarCard> CreateSuperStars()
     {
         List<SuperStarCard> superStarsList = new List<SuperStarCard>();
-        superStarsList.Add(new SuperStarCard("HHH", "HHH (Superstar Card)", 10, 3, "None, isn't the starting hand size enough! He is 'The Game' after all!", "HHH"));
-        superStarsList.Add(new SuperStarCard("STONE COLD STEVE AUSTIN", "STONE COLD STEVE AUSTIN (Superstar Card)", 7, 5, "Once during your turn, you may draw a card, but you must then take a card from your hand and place it on the bottom of your Arsenal.", "StoneCold"));
-        superStarsList.Add(new SuperStarCard("THE UNDERTAKER", "THE UNDERTAKER (Superstar Card)", 6, 4, "Once during your turn, you may discard 2 cards to the Ringside pile and take 1 card from the Ringside pile and place it into your hand.", "Undertaker"));
-        superStarsList.Add(new SuperStarCard("MANKIND", "MANKIND (Superstar Card)", 2, 4, "You must always draw 2 cards, if possible, during your draw segment. All damage from opponent is at -1D.", "Mankind"));
-        superStarsList.Add(new SuperStarCard("THE ROCK", "THE ROCK (Superstar Card)", 5, 5, "At the start of your turn, before your draw segment, you may take 1 card from your Ringside pile and place it on the bottom of your Arsenal.", "TheRock"));
-        superStarsList.Add(new SuperStarCard("KANE", "KANE (Superstar Card)", 7, 2, "At the start of your turn, before your draw segment, opponent must take the top card from his Arsenal and place it into his Ringside pile.", "Kane"));
-        superStarsList.Add(new SuperStarCard("CHRIS JERICHO", "CHRIS JERICHO (Superstar Card)", 7, 3, "Once during your turn, you may discard a card from your hand to force your opponent to discard a card from his hand.", "Jericho"));
+        superStarsList.Add(new SuperStarCard("HHH", "HHH (Superstar Card)", 10, 3, "None, isn't the starting hand size enough! He is 'The Game' after all!", "HHH", true, 0));
+        superStarsList.Add(new SuperStarCard("STONE COLD STEVE AUSTIN", "STONE COLD STEVE AUSTIN (Superstar Card)", 7, 5, "Once during your turn, you may draw a card, but you must then take a card from your hand and place it on the bottom of your Arsenal.", "StoneCold", false, 0));
+        superStarsList.Add(new SuperStarCard("THE UNDERTAKER", "THE UNDERTAKER (Superstar Card)", 6, 4, "Once during your turn, you may discard 2 cards to the Ringside pile and take 1 card from the Ringside pile and place it into your hand.", "Undertaker", false, 0));
+        superStarsList.Add(new SuperStarCard("MANKIND", "MANKIND (Superstar Card)", 2, 4, "You must always draw 2 cards, if possible, during your draw segment. All damage from opponent is at -1D.", "Mankind", true, 1));
+        superStarsList.Add(new SuperStarCard("THE ROCK", "THE ROCK (Superstar Card)", 5, 5, "At the start of your turn, before your draw segment, you may take 1 card from your Ringside pile and place it on the bottom of your Arsenal.", "TheRock", true, 0));
+        superStarsList.Add(new SuperStarCard("KANE", "KANE (Superstar Card)", 7, 2, "At the start of your turn, before your draw segment, opponent must take the top card from his Arsenal and place it into his Ringside pile.", "Kane", true, 0));
+        superStarsList.Add(new SuperStarCard("CHRIS JERICHO", "CHRIS JERICHO (Superstar Card)", 7, 3, "Once during your turn, you may discard a card from your hand to force your opponent to discard a card from his hand.", "Jericho", false, 0));
         return superStarsList;
     }
 }

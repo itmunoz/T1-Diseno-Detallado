@@ -39,15 +39,37 @@ public class Game
         
         DrawCard(player, opponent);
         bool isTurnOver = false;
+        bool usedAbilityThisTurn = false;
+        
         while (!isTurnOver)
         {
             StartTurnMessage();
-            StartTurnOptions(player);
+            if (player.Superstar.IsAbilityStartOfTurn || usedAbilityThisTurn)
+            {
+                StartTurnOptions(player, false);
+            }
+            else
+            {
+                StartTurnOptions(player, true);
+            }
+            
             int selectedOption = AskForNumber(0, 3);
-
+            
             if (selectedOption == 0)
             {
-                UseSuperAbility();
+                if (usedAbilityThisTurn)
+                {
+                    Console.WriteLine("Ya utilizaste tu habilidad este turno");
+                }
+                else if (player.Superstar.IsAbilityStartOfTurn)
+                {
+                    Console.WriteLine("Recuerda que " + player.Superstar.name + " solo puede utilizar su habilidad antes de robar");
+                }
+                else
+                {
+                    UseSuperAbility(player, opponent);
+                    usedAbilityThisTurn = true;
+                }
             } 
             else if (selectedOption == 1)
             {
@@ -73,6 +95,7 @@ public class Game
         }
         else if (player.Superstar.name == "MANKIND")
         {
+            Console.WriteLine("Mankind utiliza su habilidad y roba una segunda carta");
             DrawCard(player, opponent);
         }
         else if (player.Superstar.name == "THE ROCK")
@@ -117,6 +140,7 @@ public class Game
 
     private static void KaneSuperStarAbility(Player opponent)
     {
+        Console.WriteLine("Kane utiliza su súper habilidad y hace 1D a " + opponent.Superstar.name);
         Card lostCard = opponent.Arsenal[opponent.Arsenal.Count - 1];
         opponent.Ringside.Add(lostCard);
         opponent.Arsenal.RemoveAt(opponent.Arsenal.Count - 1);
@@ -160,6 +184,7 @@ public class Game
     private static void ExecuteCardDamage(Card playedCard, Player player, Player opponent)
     {
         int totalDamage = playedCard.GetDamageInt();
+        totalDamage -= opponent.Superstar.DamageReduction;
 
         for (int i = 0; i < totalDamage; i++)
         {
@@ -261,16 +286,22 @@ public class Game
         }
     }
 
-    private static void UseSuperAbility()
+    private static void UseSuperAbility(Player player, Player opponent)
     {
-        
+        if (player.Superstar.name == "CHRIS JERICHO")
+        {
+            JerichoSuperStarAbility(player, opponent);
+        }
     }
 
-    private static void StartTurnOptions(Player player)
+    private static void StartTurnOptions(Player player, bool isAbilityAvailable)
     {
         Console.WriteLine("-----------------------------------------");
         Console.WriteLine("Juega " + player.Superstar.name + ". ¿Qué quieres hacer?");
-        Console.WriteLine("        0. Usar mi super habilidad");
+        if (isAbilityAvailable)
+        {
+            Console.WriteLine("        0. Usar mi super habilidad");
+        }
         Console.WriteLine("        1. Ver mis cartas o las cartas de mi oponente");
         Console.WriteLine("        2. Jugar una carta");
         Console.WriteLine("        3. Terminar mi turno");
@@ -364,5 +395,25 @@ public class Game
         } while (!wasParseSuccessful || number < minValue || number > maxValue);
 
         return number;
+    }
+    
+    private static void JerichoSuperStarAbility(Player player, Player opponent)
+    {
+        PrintCards(player.Hand);
+        Console.WriteLine("Escoge una carta de la mano de " + player.Superstar.name + " para descartar");
+        int selectedIdPlayer = AskForNumber(0, player.Hand.Count - 1);
+        DiscardCard(player, selectedIdPlayer);
+
+        PrintCards(opponent.Hand);
+        Console.WriteLine("Escoge una carta de la mano de " + opponent.Superstar.name + " para descartar");
+        int selectedIdOpponent = AskForNumber(0, opponent.Hand.Count - 1);
+        DiscardCard(opponent, selectedIdOpponent);
+    }
+
+    private static void DiscardCard(Player player, int selectedId)
+    {
+        Card discardedCard = player.Hand[selectedId];
+        player.Ringside.Add(discardedCard);
+        player.Hand.RemoveAt(selectedId);
     }
 }
