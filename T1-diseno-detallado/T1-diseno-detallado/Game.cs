@@ -30,14 +30,14 @@ public class Game
                 PlayTurn(Player2, Player1);
                 PlayTurn(Player1, Player2);
             }
-            
-            // isGameOver = true;
         }
     }
 
     private static void PlayTurn(Player player, Player opponent)
     {
-        DrawCard(player);
+        SuperstarAbilityBeforeDraw(player, opponent);
+        
+        DrawCard(player, opponent);
         bool isTurnOver = false;
         while (!isTurnOver)
         {
@@ -63,6 +63,63 @@ public class Game
             }
             
         }
+    }
+
+    private static void SuperstarAbilityBeforeDraw(Player player, Player opponent)
+    {
+        if (player.Superstar.name == "KANE")
+        {
+            KaneSuperStarAbility(opponent);
+        }
+        else if (player.Superstar.name == "MANKIND")
+        {
+            DrawCard(player, opponent);
+        }
+        else if (player.Superstar.name == "THE ROCK")
+        {
+            TheRockSuperStarAbility(player);
+        }
+    }
+
+    private static void TheRockSuperStarAbility(Player player)
+    {
+        if (player.Ringside.Count != 0)
+        {
+            Console.WriteLine("¿Quieres utilizar la habilidad de The Rock antes de robar?");
+            Console.WriteLine("0: No || 1: Sí");
+            int selectedOption = AskForNumber(0, 1);
+            if (selectedOption == 1)
+            {
+                RecoverCard(player);
+            }
+        }
+        else
+        {
+            Console.WriteLine("The Rock no puede usar su habilidad porque no hay cartas en su Ringside");
+        }
+    }
+
+    private static void RecoverCard(Player player)
+    {
+        PrintCards(player.Ringside);
+        Console.WriteLine("Ingresa el ID de la carta que quieres recuperar. Puedes ingresar '-1' para cancelar.");
+        Console.WriteLine("(Ingresa un número entre -1 y " + (player.Ringside.Count - 1) + ")");
+        
+        int selectedOption = AskForNumber(-1 , player.Ringside.Count - 1);
+
+        if (selectedOption != -1)
+        {
+            Card selectedCard = player.Ringside[selectedOption];
+            player.Arsenal.Insert(0, selectedCard);
+            player.Ringside.Remove(selectedCard);
+        }
+    }
+
+    private static void KaneSuperStarAbility(Player opponent)
+    {
+        Card lostCard = opponent.Arsenal[opponent.Arsenal.Count - 1];
+        opponent.Ringside.Add(lostCard);
+        opponent.Arsenal.RemoveAt(opponent.Arsenal.Count - 1);
     }
 
     private static void PlayCard(Player player, Player opponent)
@@ -119,11 +176,11 @@ public class Game
         }
     }
 
-    private static void AnnounceWinner(Player player, Player opponent)
+    private static void AnnounceWinner(Player winner, Player loser)
     {
         Console.WriteLine("#####################");
-        Console.WriteLine(opponent.Superstar.name + " se ha quedado sin cartas en su Arsenal!");
-        Console.WriteLine("El ganador es " + player.Superstar.name + "!!!!!");
+        Console.WriteLine(loser.Superstar.name + " se ha quedado sin cartas en su Arsenal!");
+        Console.WriteLine("El ganador es " + winner.Superstar.name + "!!!!!");
         Environment.Exit(0);
     }
 
@@ -260,11 +317,19 @@ public class Game
         }
     }
 
-    private static void DrawCard(Player player)
+    private static void DrawCard(Player player, Player opponent)
     {
-        Card drawnCard = player.Arsenal[player.Arsenal.Count - 1];
-        player.Hand.Add(drawnCard);
-        player.Arsenal.RemoveAt(player.Arsenal.Count - 1);
+        if (player.Arsenal.Count == 0)
+        {
+            AnnounceWinner(opponent, player);
+        }
+        else
+        {
+            Card drawnCard = player.Arsenal[player.Arsenal.Count - 1];
+            player.Hand.Add(drawnCard);
+            player.Arsenal.RemoveAt(player.Arsenal.Count - 1);
+        }
+        
     }
 
     private static void StartTurnMessage()
