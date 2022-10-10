@@ -77,7 +77,11 @@ public class Game
             }
             else if (selectedOption == 2)
             {
-                PlayCard(player, opponent);
+                bool wasReversed = PlayCard(player, opponent);
+                if (wasReversed)
+                {
+                    isTurnOver = true;
+                }
             }
             else if (selectedOption == 3)
             {
@@ -146,8 +150,9 @@ public class Game
         opponent.Arsenal.RemoveAt(opponent.Arsenal.Count - 1);
     }
 
-    private static void PlayCard(Player player, Player opponent)
+    private static bool PlayCard(Player player, Player opponent)
     {
+        bool ultimateWasReverted = false;
         Console.WriteLine("Estas son las cartas que puedes jugar:");
         List<Card> playableCards = GetPlayableCards(player);
         
@@ -163,30 +168,105 @@ public class Game
             Card playedCard = playableCards[selectedOption];
 
             PlayedCardData(player, playedCard);
-
-            PutCardInRingArea(playedCard, player);
-
+            
             bool isCardReverted = ReverseCard(playedCard, player, opponent);
 
             if (!isCardReverted)
             {
+                PutCardInRingArea(playedCard, player);
                 ApplyCardEffect(playedCard, player, opponent);
                 ExecuteCardDamage(playedCard, player, opponent);
             }
+            else
+            {
+                PutCardInRingSide(playedCard, player);
+                ultimateWasReverted = true;
+            }
         }
+        return ultimateWasReverted;
     }
 
     private static bool ReverseCard(Card playedCard, Player player, Player opponent)
     {
+        bool isReversed = false;
+        
         Console.WriteLine("-----------------------------");
         Console.WriteLine("Pero " + opponent.Superstar.name + " tiene la opción de revertir la carta:");
         Console.WriteLine("");
-        
-        Console.WriteLine("Lo lamento, pero no hay nada que jugar");
-        Console.WriteLine("");
 
-        CardNotReverted(playedCard, player, opponent);
-        return false;
+        List<Card> availableReversals = CheckReversals(playedCard, opponent);
+
+        if (availableReversals.Count != 0)
+        {
+            bool didReverse = ReversalMenu(player, opponent, availableReversals);
+            if (didReverse)
+            {
+                isReversed = true;
+            }
+        }
+        else
+        {
+            Console.WriteLine("Lo lamento, pero no hay nada que jugar");
+            Console.WriteLine("");
+
+            CardNotReverted(playedCard, player, opponent);
+        }
+
+        return isReversed;
+    }
+
+    private static bool ReversalMenu(Player player, Player opponent, List<Card> availableReversals)
+    {
+        bool isReverted = false;
+        Console.WriteLine("Estas son las cartas que puedes jugar");
+        PrintCards(availableReversals);
+        
+        Console.WriteLine("Ingresa el ID de la carta que quieres jugar. Puedes ingresar '-1' para cancelar.");
+        Console.WriteLine("(Ingresa un número entre -1 y " + (availableReversals.Count - 1) + ")");
+        
+        int selectedOption = AskForNumber(-1 , availableReversals.Count - 1);
+
+        if (selectedOption != -1)
+        {
+            ExecuteReversal(player, opponent, availableReversals[selectedOption]);
+            isReverted = true;
+        }
+
+        return isReverted;
+    }
+
+    private static void ExecuteReversal(Player player, Player opponent, Card selectedCard)
+    {
+        Console.WriteLine("");
+        Console.WriteLine("-----------------------");
+        Console.WriteLine(opponent.Superstar.name + " revierte la carta usando:");
+
+        FinalCardData(selectedCard);
+        
+        Console.WriteLine("");
+        Console.WriteLine("-----------------------");
+
+        ApplyCardEffect(selectedCard, opponent, player);
+        
+        PutCardInRingArea(selectedCard, opponent);
+
+        ExecuteCardDamage(selectedCard, opponent, player);
+
+    }
+
+    private static List<Card> CheckReversals(Card playedCard, Player player)
+    {
+        List<Card> availableReversals = new List<Card>();
+
+        foreach (var checkedCard in player.Hand)
+        {
+            bool isUsableReversal = checkedCard.CheckReversal(playedCard);
+            if (isUsableReversal)
+            {
+                availableReversals.Add(checkedCard);
+            }
+        }
+        return availableReversals;
     }
 
     private static void CardNotReverted(Card playedCard, Player player, Player opponent)
@@ -236,6 +316,12 @@ public class Game
     private static void PutCardInRingArea(Card playedCard, Player player)
     {
         player.RingArea.Add(playedCard);
+        player.Hand.Remove(playedCard);
+    }
+
+    private static void PutCardInRingSide(Card playedCard, Player player)
+    {
+        player.Ringside.Add(playedCard);
         player.Hand.Remove(playedCard);
     }
 

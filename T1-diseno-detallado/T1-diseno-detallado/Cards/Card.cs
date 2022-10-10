@@ -1,4 +1,6 @@
 using System.Text.Json.Serialization;
+using System.Linq;
+
 
 namespace T1_diseno_detallado;
 
@@ -31,5 +33,29 @@ public class Card
     public int GetDamageInt()
     {
         return Int32.Parse(this.Damage);
+    }
+
+    public bool CheckReversal(Card playedCard)
+    {
+        bool isUsefulReversal = false;
+
+        if (this.Subtypes.Contains("ReversalSubmission") && playedCard.Subtypes.Contains("Submission"))
+        {
+            isUsefulReversal = true;
+        }
+        else if (this.Subtypes.Contains("ReversalGrapple") && playedCard.Subtypes.Contains("Grapple"))
+        {
+            isUsefulReversal = true;
+        }
+        else if (this.Subtypes.Contains("ReversalStrike") && playedCard.Subtypes.Contains("Strike"))
+        {
+            isUsefulReversal = true;
+        }
+        else if (this.Subtypes.Contains("ReversalAction") && playedCard.Types.Contains("Action"))
+        {
+            isUsefulReversal = true;
+        }
+
+        return isUsefulReversal;
     }
 }
