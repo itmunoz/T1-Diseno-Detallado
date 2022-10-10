@@ -21,9 +21,11 @@ public class Player
         int fortitude = 0;
         foreach (var card in RingArea)
         {
-            fortitude += card.GetDamageInt();
+            if (card.Damage != "#")
+            {
+                fortitude += card.GetDamageInt();
+            }
         }
         return fortitude;
     }
-    
 }

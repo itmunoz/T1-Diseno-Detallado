@@ -175,7 +175,7 @@ public class Game
             {
                 PutCardInRingArea(playedCard, player);
                 ApplyCardEffect(playedCard, player, opponent);
-                bool wasPlayedCardReversed = ExecuteCardDamage(playedCard, player, opponent, false);
+                bool wasPlayedCardReversed = ExecuteCardDamage(playedCard, player, opponent, false, null);
                 if (wasPlayedCardReversed)
                 {
                     ultimateWasReverted = true;
@@ -202,7 +202,7 @@ public class Game
 
         if (availableReversals.Count != 0)
         {
-            bool didReverse = ReversalMenu(player, opponent, availableReversals);
+            bool didReverse = ReversalMenu(player, opponent, availableReversals, playedCard);
             if (didReverse)
             {
                 isReversed = true;
@@ -219,7 +219,7 @@ public class Game
         return isReversed;
     }
 
-    private static bool ReversalMenu(Player player, Player opponent, List<Card> availableReversals)
+    private static bool ReversalMenu(Player player, Player opponent, List<Card> availableReversals, Card playedCard)
     {
         bool isReverted = false;
         Console.WriteLine("Estas son las cartas que puedes jugar");
@@ -232,14 +232,14 @@ public class Game
 
         if (selectedOption != -1)
         {
-            ExecuteReversal(player, opponent, availableReversals[selectedOption]);
+            ExecuteReversal(player, opponent, availableReversals[selectedOption], playedCard);
             isReverted = true;
         }
 
         return isReverted;
     }
 
-    private static void ExecuteReversal(Player player, Player opponent, Card selectedCard)
+    private static void ExecuteReversal(Player player, Player opponent, Card selectedCard, Card playedCard)
     {
         Console.WriteLine("");
         Console.WriteLine("-----------------------");
@@ -254,7 +254,7 @@ public class Game
         
         PutCardInRingArea(selectedCard, opponent);
 
-        ExecuteCardDamage(selectedCard, opponent, player, true);
+        ExecuteCardDamage(selectedCard, opponent, player, true, playedCard);
 
     }
 
@@ -265,7 +265,7 @@ public class Game
         foreach (var checkedCard in player.Hand)
         {
             bool isUsableReversal = checkedCard.CheckReversal(playedCard);
-            if (isUsableReversal)
+            if (isUsableReversal && checkedCard.GetFortitudeInt() <= player.GetFortitude())
             {
                 availableReversals.Add(checkedCard);
             }
@@ -331,14 +331,22 @@ public class Game
 
     private static void ApplyCardEffect(Card playedCard, Player player, Player opponent)
     {
-        
+        playedCard.UseCardAbility(player, opponent);
     }
 
-    private static bool ExecuteCardDamage(Card playedCard, Player player, Player opponent, bool isReversal)
+    public static bool ExecuteCardDamage(Card playedCard, Player player, Player opponent, bool isReversal, Card reversedCard)
     {
         bool wasPlayedCardReversed = false;
-        
-        int totalDamage = playedCard.GetDamageInt();
+        int totalDamage = 0;
+
+        if (playedCard.Damage != "#")
+        {
+            totalDamage += playedCard.GetDamageInt();
+        }
+        else
+        {
+            totalDamage += playedCard.SpecialDamage(reversedCard);
+        }
         totalDamage -= opponent.Superstar.DamageReduction;
 
         for (int i = 0; i < totalDamage; i++)
@@ -359,12 +367,15 @@ public class Game
                 if (!isReversal)
                 {
                     bool isUsefulReversal = lostCard.CheckReversal(playedCard);
-                    if (isUsefulReversal)
+                    if (isUsefulReversal && lostCard.GetFortitudeInt() <= opponent.GetFortitude())
                     {
                         Console.WriteLine("");
                         Console.WriteLine("Esta carta revierte la maniobra de " + player.Superstar.name);
 
-                        DrawCardsStunValue(player, opponent, playedCard);
+                        if ((i + 1) != totalDamage) // si es que no se completó el daño
+                        {
+                            DrawCardsStunValue(player, opponent, playedCard);
+                        }
                         wasPlayedCardReversed = true;
                         break;
                     }
@@ -527,7 +538,7 @@ public class Game
         }
     }
 
-    private static void DrawCard(Player player, Player opponent)
+    public static void DrawCard(Player player, Player opponent)
     {
         if (player.Arsenal.Count == 0)
         {
@@ -573,6 +584,16 @@ public class Game
         } while (!wasParseSuccessful || number < minValue || number > maxValue);
 
         return number;
+    }
+
+    public static void DiscardCardMenu(Player player, int amountToDiscard)
+    {
+        Console.WriteLine("-------------------------");
+        Console.WriteLine("Jugador " + player.Superstar.name + " debe descartar " + amountToDiscard + " carta(s)");
+        PrintCards(player.Hand);
+        Console.WriteLine("Selecciona una opción:");
+        int selectedId = AskForNumber(0, player.Hand.Count - 1);
+        DiscardCard(player, selectedId);
     }
 
     private static void DiscardCard(Player player, int selectedId)
