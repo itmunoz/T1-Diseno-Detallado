@@ -119,9 +119,13 @@ public class Card
 
     public void UseCardAbility(Player player, Player opponent)
     {
-        if (this.Title == "Manager Interferes")
+        if (this.Title == "Manager Interferes" || this.Title == "Double Leg Takedown" || this.Title == "Reverse DDT")
         {
             Game.DrawCard(player, opponent);
+        }
+        else if (this.Title == "Headlock Takedown" || this.Title == "Standing Side Headlock")
+        {
+            Game.DrawCard(opponent, player);
         }
         else if (this.Title == "Clean Break")
         {
@@ -131,10 +135,55 @@ public class Card
             }
             Game.DrawCard(player, opponent);
         }
-    }
-
-    private static void DamageOpponent(Player opponent)
-    {
-        
+        else if (this.Title == "Fireman's Carry" || this.Title == "Whaddya Got?")
+        {
+            Console.WriteLine("");
+            Console.WriteLine("Las cartas de " + opponent.Superstar.name + " son las siguientes:");
+            Game.PrintCards(opponent.Hand);
+        }
+        else if (this.Title == "Running Elbow Smash" || this.Title == "Kick")
+        {
+            Game.ReceiveOneDamage(player);
+        }
+        else if (this.Title == "Head Butt" || this.Title == "Arm Drag" || this.Title == "Arm Bar")
+        {
+            Game.DiscardCardMenu(player, 1);
+        }
+        else if (this.Title == "Figure Four Leg Lock")
+        {
+            Game.DiscardCardMenu(opponent, 1);
+        }
+        else if (this.Title == "Spit At Opponent")
+        {
+            Game.DiscardCardMenu(player, 1);
+            for (int i = 4; i > 0; i--)
+            {
+                Game.DiscardCardMenu(opponent, i);
+            }
+        }
+        else if (this.Title == "Offer Handshake")
+        {
+            for (int i = 0; i < 3; i++)
+            {
+                Game.DrawCard(player, opponent);
+            }
+            Game.DiscardCardMenu(player, 1);
+        }
+        else if (this.Title == "Roll Out of the Ring")
+        {
+            for (int i = 2; i > 0; i--)
+            {
+                Game.DiscardCardMenu(player, i);
+            }
+            for (int i = 2; i > 0; i--)
+            {
+                Game.RecoverCardToHand(player);
+            }
+        }
+        else if (this.Title == "Fisherman's Suplex")
+        {
+            Game.ReceiveOneDamage(player);
+            Game.DrawCard(player, opponent);
+        }
     }
 }

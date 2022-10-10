@@ -455,7 +455,7 @@ public class Game
         }
     }
 
-    private static void PrintCards(List<Card> cards)
+    public static void PrintCards(List<Card> cards)
     {
         int currentCardNumber = 0;
         foreach (var card in cards)
@@ -601,5 +601,25 @@ public class Game
         Card discardedCard = player.Hand[selectedId];
         player.Ringside.Add(discardedCard);
         player.Hand.RemoveAt(selectedId);
+    }
+    
+    public static void RecoverCardToHand(Player player)
+    {
+        PrintCards(player.Ringside);
+        Console.WriteLine("Ingresa el ID de la carta que quieres recuperar.");
+        Console.WriteLine("(Ingresa un número entre 0 y " + (player.Ringside.Count - 1) + ")");
+        
+        int selectedOption = AskForNumber(0 , player.Ringside.Count - 1);
+        
+        Card selectedCard = player.Ringside[selectedOption];
+        player.Hand.Add(selectedCard);
+        player.Ringside.Remove(selectedCard);
+    }
+
+    public static void ReceiveOneDamage(Player player)
+    {
+        Card lostCard = player.Arsenal[player.Arsenal.Count - 1];
+        player.Ringside.Add(lostCard);
+        player.Arsenal.RemoveAt(player.Arsenal.Count - 1);
     }
 }

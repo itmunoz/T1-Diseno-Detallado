@@ -157,7 +157,6 @@ public class SuperStarCard
         Card selectedCard = player.Ringside[selectedOption];
         player.Hand.Add(selectedCard);
         player.Ringside.Remove(selectedCard);
-        
     }
     
     private static void RecoverCard(Player player)
