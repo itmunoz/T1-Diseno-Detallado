@@ -34,6 +34,11 @@ public class Card
     {
         return Int32.Parse(this.Damage);
     }
+    
+    public int GetStunValueInt()
+    {
+        return Int32.Parse(this.StunValue);
+    }
 
     public bool CheckReversal(Card playedCard)
     {

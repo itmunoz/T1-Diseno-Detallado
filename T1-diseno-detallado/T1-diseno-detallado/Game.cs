@@ -175,7 +175,11 @@ public class Game
             {
                 PutCardInRingArea(playedCard, player);
                 ApplyCardEffect(playedCard, player, opponent);
-                ExecuteCardDamage(playedCard, player, opponent);
+                bool wasPlayedCardReversed = ExecuteCardDamage(playedCard, player, opponent, false);
+                if (wasPlayedCardReversed)
+                {
+                    ultimateWasReverted = true;
+                }
             }
             else
             {
@@ -250,7 +254,7 @@ public class Game
         
         PutCardInRingArea(selectedCard, opponent);
 
-        ExecuteCardDamage(selectedCard, opponent, player);
+        ExecuteCardDamage(selectedCard, opponent, player, true);
 
     }
 
@@ -330,8 +334,10 @@ public class Game
         
     }
 
-    private static void ExecuteCardDamage(Card playedCard, Player player, Player opponent)
+    private static bool ExecuteCardDamage(Card playedCard, Player player, Player opponent, bool isReversal)
     {
+        bool wasPlayedCardReversed = false;
+        
         int totalDamage = playedCard.GetDamageInt();
         totalDamage -= opponent.Superstar.DamageReduction;
 
@@ -349,6 +355,35 @@ public class Game
                 
                 Console.WriteLine("------------------------ " + (i + 1) + "/" + totalDamage + " damage");
                 FinalCardData(lostCard);
+
+                if (!isReversal)
+                {
+                    bool isUsefulReversal = lostCard.CheckReversal(playedCard);
+                    if (isUsefulReversal)
+                    {
+                        Console.WriteLine("");
+                        Console.WriteLine("Esta carta revierte la maniobra de " + player.Superstar.name);
+
+                        DrawCardsStunValue(player, opponent, playedCard);
+                        wasPlayedCardReversed = true;
+                        break;
+                    }
+                }
+            }
+        }
+
+        return wasPlayedCardReversed;
+    }
+
+    private static void DrawCardsStunValue(Player player, Player opponent, Card reversedCard)
+    {
+        if (reversedCard.GetStunValueInt() != 0)
+        {
+            Console.WriteLine("");
+            Console.WriteLine(player.Superstar.name + " roba " + reversedCard.GetStunValueInt() + " debido a que su carta fue reversada.");
+            for (int i = 0; i < reversedCard.GetStunValueInt(); i++)
+            {
+                DrawCard(player, opponent);
             }
         }
     }
