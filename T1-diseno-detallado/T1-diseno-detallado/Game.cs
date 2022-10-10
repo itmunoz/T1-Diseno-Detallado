@@ -591,9 +591,16 @@ public class Game
         Console.WriteLine("-------------------------");
         Console.WriteLine("Jugador " + player.Superstar.name + " debe descartar " + amountToDiscard + " carta(s)");
         PrintCards(player.Hand);
-        Console.WriteLine("Selecciona una opción:");
-        int selectedId = AskForNumber(0, player.Hand.Count - 1);
-        DiscardCard(player, selectedId);
+        if (player.Hand.Count != 0)
+        {
+            Console.WriteLine("Selecciona una opción:");
+            int selectedId = AskForNumber(0, player.Hand.Count - 1);
+            DiscardCard(player, selectedId);
+        }
+        else
+        {
+            Console.WriteLine("A " + player.Superstar.name + " no le quedan cartas por descartar.");
+        }
     }
 
     private static void DiscardCard(Player player, int selectedId)
@@ -621,5 +628,59 @@ public class Game
         Card lostCard = player.Arsenal[player.Arsenal.Count - 1];
         player.Ringside.Add(lostCard);
         player.Arsenal.RemoveAt(player.Arsenal.Count - 1);
+    }
+
+    public static void SearchForCardInArsenal(Player player, string searchedCardName)
+    {
+        foreach (var card in player.Arsenal)
+        {
+            if (card.Title == searchedCardName)
+            {
+                Console.WriteLine("Se encontró la carta " + searchedCardName + ". Se agregará a la mano de " + player.Superstar.name);
+                player.Hand.Add(card);
+                player.Arsenal.Remove(card);
+                break;
+            }
+        }
+    }
+
+    public static void PassCardToArsenalFromHand(Player player)
+    {
+        Console.WriteLine("-------------------------");
+        Console.WriteLine("Jugador " + player.Superstar.name + " debe pasar una carta de su mano a su arsenal");
+        PrintCards(player.Hand);
+        Console.WriteLine("Selecciona una opción:");
+        int selectedId = AskForNumber(0, player.Hand.Count - 1);
+        
+        Card discardedCard = player.Hand[selectedId];
+        player.Arsenal.Add(discardedCard);
+        player.Hand.RemoveAt(selectedId);
+    }
+
+    public static void PassCardToArsenalFromRingside(Player player)
+    {
+        Console.WriteLine("-------------------------");
+        Console.WriteLine("Jugador " + player.Superstar.name + " debe pasar una carta de su ringside a su arsenal");
+        PrintCards(player.Ringside);
+        Console.WriteLine("Selecciona una opción:");
+        int selectedId = AskForNumber(0, player.Ringside.Count - 1);
+        
+        Card discardedCard = player.Ringside[selectedId];
+        player.Arsenal.Add(discardedCard);
+        player.Ringside.RemoveAt(selectedId);
+    }
+
+    // Bibliografía Shuffle: https://stackoverflow.com/questions/273313/randomize-a-listt
+    public static void ShuffleCards(List<Card> list)  
+    {  
+        Random rng = new Random();
+        int n = list.Count;  
+        while (n > 1) {  
+            n--;  
+            int k = rng.Next(n + 1);  
+            Card value = list[k];  
+            list[k] = list[n];  
+            list[n] = value;
+        }  
     }
 }

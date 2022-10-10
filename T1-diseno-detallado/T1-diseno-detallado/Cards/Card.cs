@@ -145,11 +145,20 @@ public class Card
         {
             Game.ReceiveOneDamage(player);
         }
+        // Jugador descarta una carta
         else if (this.Title == "Head Butt" || this.Title == "Arm Drag" || this.Title == "Arm Bar")
         {
             Game.DiscardCardMenu(player, 1);
         }
-        else if (this.Title == "Figure Four Leg Lock")
+        // Oponente descarta una carta
+        else if (this.Title == "Figure Four Leg Lock" || 
+                 this.Title == "Ankle Lock" || 
+                 this.Title == "Samoan Drop" || 
+                 this.Title == "Bear Hug" || 
+                 this.Title == "Spinning Heel Kick" || 
+                 this.Title == "Choke Hold" || 
+                 this.Title == "Boston Crab" ||
+                 this.Title == "Torture Rack")
         {
             Game.DiscardCardMenu(opponent, 1);
         }
@@ -184,6 +193,52 @@ public class Card
         {
             Game.ReceiveOneDamage(player);
             Game.DrawCard(player, opponent);
+        }
+        else if (this.Title == "Sleeper" || this.Title == "Camel Clutch")
+        {
+            Game.SearchForCardInArsenal(player, "Maintain Hold");
+            Game.ShuffleCards(player.Arsenal);
+        }
+        else if (this.Title == "Not Yet")
+        {
+            Game.PassCardToArsenalFromHand(player);
+            for (int i = 0; i < 2; i++)
+            {
+                Game.DrawCard(player, opponent);
+            }
+        }
+        else if (this.Title == "Recovery")
+        {
+            for (int i = 0; i < 2; i++)
+            {
+                Game.PassCardToArsenalFromRingside(player);
+            }
+            Game.DrawCard(player, opponent);
+        }
+        else if (this.Title == "Puppies! Puppies!")
+        {
+            for (int i = 0; i < 5; i++)
+            {
+                Game.PassCardToArsenalFromRingside(player);
+            }
+            for (int i = 0; i < 2; i++)
+            {
+                Game.DrawCard(player, opponent);
+            }
+        }
+        else if (this.Title == "Chicken Wing")
+        {
+            for (int i = 0; i < 2; i++)
+            {
+                Game.PassCardToArsenalFromRingside(player);
+            }
+        }
+        else if (this.Title == "Pump Handle Slam")
+        {
+            for (int i = 2; i > 0; i--)
+            {
+                Game.DiscardCardMenu(player, i);
+            }
         }
     }
 }
